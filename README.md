@@ -17,7 +17,6 @@ A modern, secure, and scalable RESTful API for managing a digital bookstore. Bui
 - 🌐 CORS Support
 - 📝 Comprehensive Error Handling
 - 🧪 Test Coverage
-- 🐳 Docker Support
 
 ## 🛠️ Tech Stack
 
@@ -32,7 +31,7 @@ A modern, secure, and scalable RESTful API for managing a digital bookstore. Bui
 ### Development Tools
 - **Package Manager**: npm
 - **Version Control**: Git
-- **Containerization**: Docker
+- **Deployed**: Render
 - **CI/CD**: GitHub Actions
 
 ## 🚀 Getting Started
@@ -114,8 +113,6 @@ bookstore-api/
 ├── tests/              # Test files
 ├── .env                # Environment variables
 ├── .gitignore         # Git ignore rules
-├── docker-compose.yml # Docker compose config
-├── Dockerfile         # Docker configuration
 ├── package.json       # Project dependencies
 └── README.md          # Project documentation
 ```
@@ -134,21 +131,10 @@ npm run test:coverage
 npm run test:watch
 ```
 
-## 🐳 Docker Support
+## You can access the deployed application at:  
+[Bookstore Application](https://bookstoreapplicationforzy.onrender.com/)
 
-Build and run with Docker:
-```bash
-# Build the image
-docker build -t bookstore-api .
 
-# Run the container
-docker run -p 5000:5000 bookstore-api
-```
-
-Or use Docker Compose:
-```bash
-docker-compose up
-```
 
 
 ## 🤝 Contributing
