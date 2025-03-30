@@ -6,21 +6,15 @@ const connectDB = async () => {
         console.log('Attempting to connect to MongoDB...');
         console.log('MongoDB URI:', process.env.MONGODB_URI);
 
-        const conn = await mongoose.connect(process.env.MONGODB_URI, {
+        const mongoose = require('mongoose');
+
+        mongoose.connect("mongodb+srv://anushkacgupta10:anushka%4020@cluster0.bzn8w.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0", {
             useNewUrlParser: true,
-            useUnifiedTopology: true,
-            serverSelectionTimeoutMS: 5000,
-            socketTimeoutMS: 45000,
-            family: 4,
-            maxPoolSize: 10,
-            minPoolSize: 5,
-            maxIdleTimeMS: 30000,
-            connectTimeoutMS: 10000,
-            heartbeatFrequencyMS: 10000,
-            retryWrites: true,
-            w: 'majority',
-            retryReads: true
-        });
+            useUnifiedTopology: true
+        })
+        .then(() => console.log("Connected to MongoDB"))
+        .catch(err => console.error("Could not connect to MongoDB", err));
+        
 
         console.log(`MongoDB Connected: ${conn.connection.host}`);
         console.log(`Database: ${conn.connection.name}`);
