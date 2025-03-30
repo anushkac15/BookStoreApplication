@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bookstore API Interface</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .hidden {
+            display: none;
+        }
+        .error {
+            color: red;
+            margin-top: 5px;
+        }
+        .success {
+            color: green;
+            margin-top: 5px;
+        }
+        .nav-buttons {
+            margin-bottom: 20px;
+        }
+        .nav-buttons button {
+            margin-right: 10px;
+        }
+        #booksList {
+            margin-top: 20px;
+        }
+        .book-card {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+        }
+        .search-filters {
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Bookstore API Interface</h1>
+        
+        <!-- Navigation Buttons -->
+        <div class="nav-buttons">
+            <button onclick="showLoginForm()">Login</button>
+            <button onclick="showSignupForm()">Sign Up</button>
+            <button onclick="showBooksForm()" id="addBookBtn" class="hidden">Add Book</button>
+            <button onclick="showBooksList()" id="viewBooksBtn" class="hidden">View Books</button>
+            <button onclick="logout()" id="logoutBtn" class="hidden">Logout</button>
+        </div>
+
+        <!-- Login Form -->
+        <div id="loginForm">
+            <h2>Login</h2>
+            <div class="form-group">
+                <label for="loginEmail">Email:</label>
+                <input type="email" id="loginEmail" required>
+            </div>
+            <div class="form-group">
+                <label for="loginPassword">Password:</label>
+                <input type="password" id="loginPassword" required>
+            </div>
+            <button onclick="login()">Login</button>
+            <div id="loginError" class="error"></div>
+        </div>
+
+        <!-- Signup Form -->
+        <div id="signupForm" class="hidden">
+            <h2>Sign Up</h2>
+            <div class="form-group">
+                <label for="signupEmail">Email:</label>
+                <input type="email" id="signupEmail" required>
+            </div>
+            <div class="form-group">
+                <label for="signupPassword">Password:</label>
+                <input type="password" id="signupPassword" required>
+            </div>
+            <button onclick="signUp()">Sign Up</button>
+            <div id="signupError" class="error"></div>
+        </div>
+
+        <!-- Add Book Form -->
+        <div id="booksForm" class="hidden">
+            <h2>Add New Book</h2>
+            <div class="form-group">
+                <label for="bookTitle">Title:</label>
+                <input type="text" id="bookTitle" required>
+            </div>
+            <div class="form-group">
+                <label for="bookAuthor">Author:</label>
+                <input type="text" id="bookAuthor" required>
+            </div>
+            <div class="form-group">
+                <label for="bookCategory">Category:</label>
+                <input type="text" id="bookCategory" required>
+            </div>
+            <div class="form-group">
+                <label for="bookPrice">Price:</label>
+                <input type="number" id="bookPrice" step="0.01" required>
+            </div>
+            <div class="form-group">
+                <label for="bookRating">Rating (0-5):</label>
+                <input type="number" id="bookRating" min="0" max="5" step="0.1" required>
+            </div>
+            <button onclick="addBook()">Add Book</button>
+            <div id="bookError" class="error"></div>
+        </div>
+
+        <!-- Books List with Search -->
+        <div id="booksList" class="hidden">
+            <h2>Books List</h2>
+            <div class="search-filters">
+                <div class="form-group">
+                    <label for="searchQuery">Search:</label>
+                    <input type="text" id="searchQuery" placeholder="Search by title or author">
+                </div>
+                <div class="form-group">
+                    <label for="categoryFilter">Category:</label>
+                    <input type="text" id="categoryFilter" placeholder="Filter by category">
+                </div>
+                <div class="form-group">
+                    <label for="minRating">Minimum Rating:</label>
+                    <input type="number" id="minRating" min="0" max="5" step="0.1" placeholder="Min rating">
+                </div>
+                <button onclick="searchBooks()">Search</button>
+            </div>
+            <div id="booksListContent"></div>
+        </div>
+    </div>
+
+    <script>
+        let token = localStorage.getItem('token');
+
+        // Show/Hide Forms
+        function showLoginForm() {
+            document.getElementById('loginForm').classList.remove('hidden');
+            document.getElementById('signupForm').classList.add('hidden');
+            document.getElementById('booksForm').classList.add('hidden');
+            document.getElementById('booksList').classList.add('hidden');
+        }
+
+        function showSignupForm() {
+            document.getElementById('loginForm').classList.add('hidden');
+            document.getElementById('signupForm').classList.remove('hidden');
+            document.getElementById('booksForm').classList.add('hidden');
+            document.getElementById('booksList').classList.add('hidden');
+        }
+
+        function showBooksForm() {
+            document.getElementById('loginForm').classList.add('hidden');
+            document.getElementById('signupForm').classList.add('hidden');
+            document.getElementById('booksForm').classList.remove('hidden');
+            document.getElementById('booksList').classList.add('hidden');
+        }
+
+        function showBooksList() {
+            document.getElementById('loginForm').classList.add('hidden');
+            document.getElementById('signupForm').classList.add('hidden');
+            document.getElementById('booksForm').classList.add('hidden');
+            document.getElementById('booksList').classList.remove('hidden');
+            getBooks();
+        }
+
+        // Authentication Functions
+        async function signUp() {
+            const email = document.getElementById('signupEmail').value;
+            const password = document.getElementById('signupPassword').value;
+
+            try {
+                const response = await fetch('/api/user/signup', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'Failed to sign up');
+                }
+
+                token = data.token;
+                localStorage.setItem('token', token);
+                document.getElementById('signupError').textContent = 'Sign up successful!';
+                document.getElementById('addBookBtn').classList.remove('hidden');
+                document.getElementById('viewBooksBtn').classList.remove('hidden');
+                document.getElementById('logoutBtn').classList.remove('hidden');
+                showBooksList();
+            } catch (error) {
+                document.getElementById('signupError').textContent = error.message;
+                console.error('Error:', error);
+            }
+        }
+
+        async function login() {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            try {
+                const response = await fetch('/api/user/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'Failed to login');
+                }
+
+                token = data.token;
+                localStorage.setItem('token', token);
+                document.getElementById('loginError').textContent = '';
+                document.getElementById('addBookBtn').classList.remove('hidden');
+                document.getElementById('viewBooksBtn').classList.remove('hidden');
+                document.getElementById('logoutBtn').classList.remove('hidden');
+                showBooksList();
+            } catch (error) {
+                document.getElementById('loginError').textContent = error.message;
+                console.error('Error:', error);
+            }
+        }
+
+        function logout() {
+            token = null;
+            localStorage.removeItem('token');
+            document.getElementById('addBookBtn').classList.add('hidden');
+            document.getElementById('viewBooksBtn').classList.add('hidden');
+            document.getElementById('logoutBtn').classList.add('hidden');
+            showLoginForm();
+        }
+
+        // Book Management Functions
+        async function addBook() {
+            const book = {
+                title: document.getElementById('bookTitle').value,
+                author: document.getElementById('bookAuthor').value,
+                category: document.getElementById('bookCategory').value,
+                price: parseFloat(document.getElementById('bookPrice').value),
+                rating: parseFloat(document.getElementById('bookRating').value)
+            };
+
+            try {
+                const response = await fetch('/api/store', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(book)
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Failed to add book');
+                }
+
+                document.getElementById('bookError').textContent = 'Book added successfully!';
+                document.getElementById('bookTitle').value = '';
+                document.getElementById('bookAuthor').value = '';
+                document.getElementById('bookCategory').value = '';
+                document.getElementById('bookPrice').value = '';
+                document.getElementById('bookRating').value = '';
+                showBooksList();
+            } catch (error) {
+                document.getElementById('bookError').textContent = 'Error adding book: ' + error.message;
+                console.error('Error:', error);
+            }
+        }
+
+        async function getBooks() {
+            try {
+                const response = await fetch('/api/store', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Failed to fetch books');
+                }
+
+                const data = await response.json();
+                displayBooks(data.books);
+            } catch (error) {
+                document.getElementById('booksListContent').innerHTML = `<div class="error">Error loading books: ${error.message}</div>`;
+                console.error('Error loading books:', error);
+            }
+        }
+
+        async function searchBooks() {
+            const searchQuery = document.getElementById('searchQuery').value;
+            const category = document.getElementById('categoryFilter').value;
+            const minRating = document.getElementById('minRating').value;
+
+            try {
+                let url = '/api/store?';
+                if (searchQuery) url += `search=${encodeURIComponent(searchQuery)}&`;
+                if (category) url += `category=${encodeURIComponent(category)}&`;
+                if (minRating) url += `minRating=${encodeURIComponent(minRating)}&`;
+
+                const response = await fetch(url, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Failed to search books');
+                }
+
+                const data = await response.json();
+                displayBooks(data.books);
+            } catch (error) {
+                document.getElementById('booksListContent').innerHTML = `<div class="error">Error searching books: ${error.message}</div>`;
+                console.error('Error searching books:', error);
+            }
+        }
+
+        function displayBooks(books) {
+            const booksListContent = document.getElementById('booksListContent');
+            
+            if (!Array.isArray(books)) {
+                booksListContent.innerHTML = '<div class="error">Invalid response format</div>';
+                return;
+            }
+
+            if (books.length === 0) {
+                booksListContent.innerHTML = '<div class="success">No books found</div>';
+                return;
+            }
+
+            booksListContent.innerHTML = books.map(book => `
+                <div class="book-card">
+                    <h3>${book.title}</h3>
+                    <p><strong>Author:</strong> ${book.author}</p>
+                    <p><strong>Category:</strong> ${book.category}</p>
+                    <p><strong>Price:</strong> $${book.price.toFixed(2)}</p>
+                    <p><strong>Rating:</strong> ${book.rating.toFixed(1)}/5</p>
+                    <button onclick="deleteBook('${book._id}')">Delete</button>
+                </div>
+            `).join('');
+        }
+
+        async function deleteBook(bookId) {
+            if (!confirm('Are you sure you want to delete this book?')) return;
+
+            try {
+                const response = await fetch(`/api/store/${bookId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Failed to delete book');
+                }
+
+                getBooks();
+            } catch (error) {
+                alert('Error deleting book: ' + error.message);
+                console.error('Error:', error);
+            }
+        }
+
+        // Check if user is logged in on page load
+        if (token) {
+            document.getElementById('addBookBtn').classList.remove('hidden');
+            document.getElementById('viewBooksBtn').classList.remove('hidden');
+            document.getElementById('logoutBtn').classList.remove('hidden');
+            showBooksList();
+        } else {
+            showLoginForm();
+        }
+    </script>
+</body>
+</html> 
