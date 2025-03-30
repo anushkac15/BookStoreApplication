@@ -9,12 +9,11 @@ const connectDB = async () => {
         const conn = await mongoose.connect("mongodb+srv://anushkacgupta10:anushka%4020@cluster0.bzn8w.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0", {
             useNewUrlParser: true,
             useUnifiedTopology: true
-        }).then(() => console.log("Connected to MongoDB Atlas"))
-        .catch(err => console.error("MongoDB connection error:", err));
+        })
 
-        console.log(`MongoDB Connected: ${conn.connection.host}`);
-        console.log(`Database: ${conn.connection.name}`);
-        console.log(`Port: ${conn.connection.port}`);
+        // console.log(`MongoDB Connected: ${conn.connection.host}`);
+        // console.log(`Database: ${conn.connection.name}`);
+        // console.log(`Port: ${conn.connection.port}`);
 
         // Handle connection errors after initial connection
         mongoose.connection.on('error', err => {
