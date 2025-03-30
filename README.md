@@ -9,8 +9,6 @@ A modern, secure, and scalable RESTful API for managing a digital bookstore. Bui
 - 👥 User Authentication & Authorization
 - 🔍 Advanced Search & Filtering
 - 📱 Pagination & Sorting
-- 🛒 Shopping Cart Management
-- 📊 Order Processing
 
 ### Technical Features
 - 🔒 JWT-based Authentication
@@ -30,7 +28,6 @@ A modern, secure, and scalable RESTful API for managing a digital bookstore. Bui
 - **Authentication**: JWT (JSON Web Tokens)
 - **Validation**: Express Validator
 - **Testing**: Jest & Supertest
-- **Documentation**: Swagger/OpenAPI
 
 ### Development Tools
 - **Package Manager**: npm
@@ -102,8 +99,6 @@ npm start
 - CORS Configuration
 - Rate Limiting
 - Request Size Limits
-- XSS Protection
-- Helmet Security Headers
 
 ## 📁 Project Structure
 ```
@@ -155,12 +150,6 @@ Or use Docker Compose:
 docker-compose up
 ```
 
-## 📝 API Documentation
-
-For detailed API documentation, visit:
-```
-http://localhost:5000/api-docs
-```
 
 ## 🤝 Contributing
 
@@ -169,10 +158,6 @@ http://localhost:5000/api-docs
 3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## 👥 Author
 
